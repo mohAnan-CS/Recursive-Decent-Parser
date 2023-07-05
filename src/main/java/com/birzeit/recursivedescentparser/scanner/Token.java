@@ -2,16 +2,18 @@ package com.birzeit.recursivedescentparser.scanner;
 
 public class Token {
 
-    private  String type;
     private  String value;
+    private  String type;//non-terminal or terminal
+    private Boolean isReservedWord;
 
-    public Token(String type, String value) {
-        this.type = type;
+    public Token(String value, String type, Boolean isReservedWord) {
         this.value = value;
+        this.type = type;
+        this.isReservedWord = isReservedWord;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public String getValue() {
+        return value;
     }
 
     public void setValue(String value) {
@@ -22,13 +24,24 @@ public class Token {
         return type;
     }
 
-    public String getValue() {
-        return value;
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public Boolean getReservedWord() {
+        return isReservedWord;
+    }
+
+    public void setReservedWord(Boolean reservedWord) {
+        isReservedWord = reservedWord;
     }
 
     @Override
     public String toString() {
-        return "[" + type + ": " + value + "]";
+        return "Token{" +
+                "value='" + value + '\'' +
+                ", type='" + type + '\'' +
+                ", isReservedWord=" + isReservedWord +
+                '}';
     }
-
 }
