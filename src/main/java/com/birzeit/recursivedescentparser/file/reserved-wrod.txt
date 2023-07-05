@@ -1,0 +1,15 @@
+project
+const
+var
+int
+routine
+start
+end
+input
+output
+if
+then
+endif
+else
+loop
+do
