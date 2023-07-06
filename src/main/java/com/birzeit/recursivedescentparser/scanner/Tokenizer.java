@@ -1,15 +1,18 @@
 package com.birzeit.recursivedescentparser.scanner;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Tokenizer {
 
+    public Tokenizer(){
+
+    }
+
     public static List<String> tokenize(String input) {
-        List<String> tokens = new ArrayList<>();
+        List<Token> tokens = new ArrayList<>();
         Pattern pattern = Pattern.compile("\\w+|<|<=|>|>=|<>|\\*|/|%|\\+|-|=|:=|;|,|:|\\(|\\)|\\.");
         Matcher matcher = pattern.matcher(input);
 
