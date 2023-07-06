@@ -8,22 +8,9 @@ import java.util.regex.Pattern;
 
 public class Tokenizer {
 
-    public static HashMap<String, String> nonTerminalHashMap;
-    public static HashMap<String, String> terminalHashMap;
-    public static HashMap<String, String> reservedWordHashMap;
-
-    public Tokenizer(){
-
-        nonTerminalHashMap = FileParser.read("C:\\Users\\twitter\\IdeaProjects\\RecursiveDescentParser\\src\\main\\java\\com\\birzeit\\recursivedescentparser\\file\\non-terminal.txt", "non-terminal");
-        terminalHashMap = FileParser.read("C:\\Users\\twitter\\IdeaProjects\\RecursiveDescentParser\\src\\main\\java\\com\\birzeit\\recursivedescentparser\\file\\terminal.txt", "terminal");
-        reservedWordHashMap = FileParser.read("C:\\Users\\twitter\\IdeaProjects\\RecursiveDescentParser\\src\\main\\java\\com\\birzeit\\recursivedescentparser\\file\\reserved-word.txt", "reserved-word");
-
-    }
-
     public static List<String> tokenize(String input) {
         List<String> tokens = new ArrayList<>();
         Pattern pattern = Pattern.compile("\\w+|<|<=|>|>=|<>|\\*|/|%|\\+|-|=|:=|;|,|:|\\(|\\)|\\.");
-
         Matcher matcher = pattern.matcher(input);
 
         while (matcher.find()) {
