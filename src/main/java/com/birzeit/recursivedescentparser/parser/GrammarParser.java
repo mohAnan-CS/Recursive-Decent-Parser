@@ -56,6 +56,7 @@ public class GrammarParser {
             projectDeclaration();
             return true;
         } catch (Exception e) {
+            System.out.println();
             System.out.println("Error parsing at token " + current + ": " + e.getMessage());
             return false;
         }
@@ -80,6 +81,45 @@ public class GrammarParser {
 
     private void declarations() throws Exception{
 
+        //const-declaration
+        constDeclaration();
+        //var-decl
+        //subroutine-decl
+
+    }
+
+    private void constDeclaration() throws Exception{
+
+        //const-decl  const ( const-item  ";" )^+  | lambda
+        if (getToken().equals("const")){
+            constItem();
+        }
+
+    }
+
+    private void constItem() throws Exception{
+        //	const-item     "name"   =   "integer-value"
+        if (!reservedWords.containsKey(getToken())) {
+            if (getToken().equals("=")) {
+                //Check if getToken can parse to integer value
+                try {
+                    Integer.parseInt(getToken());
+                    if (getToken().equals(";")){
+                        if (getToken().equals("const")) {
+                            constItem();
+                        }
+                    }else{
+                        throw new Exception("Error parsing at " + current + "expected ; but found " + tokenList.get(current));
+                    }
+                } catch (NumberFormatException e) {
+                    throw new Exception("Error parsing at " + current + "expected integer value but found " + tokenList.get(current));
+                }
+            }else{
+                throw new Exception("Error parsing at " + current + "expected '=' but found " + tokenList.get(current));
+            }
+        }else{
+            throw new Exception("Error parsing at " + current + "const name cant be a reserved word -> " + tokenList.get(current));
+        }
 
 
     }
