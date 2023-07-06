@@ -1,11 +1,11 @@
-package com.birzeit.recursivedescentparser.scanner;
+package com.birzeit.recursivedescentparser.parser;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 
-public class FileParser {
+public class FileOperations {
 
     public static void main(String[] args) {
         String filePath = "C:\\Users\\twitter\\IdeaProjects\\RecursiveDescentParser\\src\\main\\java\\com\\birzeit\\recursivedescentparser\\file\\reserved-word.txt";
