@@ -3,7 +3,7 @@ package com.birzeit.recursivedescentparser;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
-public class HelloController {
+public class ParserController {
     @FXML
     private Label welcomeText;
 

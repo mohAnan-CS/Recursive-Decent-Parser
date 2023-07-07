@@ -81,10 +81,10 @@ public class GrammarParser {
 
     private void declarations() throws Exception {
 
-        if (currentToken.equals("start")){
+        if (currentToken.equals("start")) {
             System.out.println("token equals start in declarations");
             compoundStatement();
-        }else {
+        } else {
             System.out.println("enter declarations");
             //const-declaration
             constDeclaration();
@@ -99,7 +99,7 @@ public class GrammarParser {
 
     }
 
-    private void subroutineDeclaration() throws Exception{
+    private void subroutineDeclaration() throws Exception {
 
         //subroutine-decl  subroutine-heading  declarations  compound-stmt  “;”  |  lambda
 
@@ -119,7 +119,7 @@ public class GrammarParser {
 
     }
 
-    private void compoundStatement() throws Exception{
+    private void compoundStatement() throws Exception {
 
         //compound-stmt  start  stmt-list end
         System.out.println("enter compoundStatement");
@@ -127,7 +127,7 @@ public class GrammarParser {
             getToken();
             stmtList();
             System.out.println("current token after stmt list is " + currentToken);
-            if (currentToken.equals(";")){
+            if (currentToken.equals(";")) {
                 return;
             }
             if (currentToken.equals("end")) {
@@ -138,18 +138,18 @@ public class GrammarParser {
             } else {
                 throw new Exception("Error parsing at token number " + current + " expected 'end' but found " + currentToken);
             }
-        }else{
+        } else {
             throw new Exception("Error parsing at token number " + current + " expected 'start' but found " + currentToken);
         }
 
     }
 
-    private void stmtList() throws Exception{
+    private void stmtList() throws Exception {
 
         //stmt-list    ( statement    ";" )*
         if (currentToken.equals("end")) {
             System.out.println("stmt list is empty");
-        }else {
+        } else {
             while (!currentToken.equals("end")) {
                 statement();
                 getToken();
@@ -165,22 +165,22 @@ public class GrammarParser {
 
     }
 
-    private void statement() throws Exception{
+    private void statement() throws Exception {
 
         System.out.println("enter statement");
         System.out.println("current token in statement is " + currentToken);
         if (currentToken.equals("input") || currentToken.equals("output")) {
             inoutStmt();
-        }else if (currentToken.equals("if")) {
+        } else if (currentToken.equals("if")) {
             ifStmt();
-        }else if (currentToken.equals("loop")) {
+        } else if (currentToken.equals("loop")) {
             //loopStmt();
-        }else if (currentToken.equals("start")) {
+        } else if (currentToken.equals("start")) {
             compoundStatement();
-        }else{
-            if (!reservedWords.containsKey(currentToken)){
+        } else {
+            if (!reservedWords.containsKey(currentToken)) {
                 assStmt();
-            }else{
+            } else {
                 throw new Exception("Error parsing at token number " + current + " cant resolve statement name value as reserved word ");
             }
 
@@ -198,124 +198,163 @@ public class GrammarParser {
 
     }
 
-    private void ifStmt() throws Exception{
+    private void ifStmt() throws Exception {
+
+        //if-stmt  if  “(“ bool-exp   “)”  then  statement  else-part  endif
 
         System.out.println("if statement enter");
-        //if-stmt  if  “(“ bool-exp   “)”  then  statement  else-part  endif
-        if (currentToken.equals("if")){
-
+        if (currentToken.equals("if")) {
             getToken();
-            if (currentToken.equals("(")){
+            if (currentToken.equals("(")) {
                 boolExp();
+                getToken();
+                if (currentToken.equals(")")) {
+                    getToken();
+                    if (currentToken.equals("then")) {
+                        statement();
+                        elsePart();
+                        getToken();
+                        if (currentToken.equals("endif")) {
+                            System.out.println("valid if stmt");
+                        } else {
+                            throw new Exception("Error parsing at token number " + current + " expected 'endif' but found " + currentToken);
+                        }
+                    } else {
+                        throw new Exception("Error parsing at token number " + current + " expected 'then' but found " + currentToken);
+                    }
+                } else {
+                    throw new Exception("Error parsing at token number " + current + " expected ')' but found " + currentToken);
+                }
             }
         }
     }
 
-    private void boolExp() throws Exception{
+    private void elsePart() throws Exception {
+
+        //	else-part   else     statement   |   lambda
+
+        System.out.println("enter else part");
+        if (currentToken.equals("else")) {
+            getToken();
+            statement();
+        } else {
+            System.out.println("else part is empty");
+        }
+
+    }
+
+    private void boolExp() throws Exception {
 
         System.out.println("enter bool exp");
-        if (!reservedWords.containsKey(currentToken)){
+        if (!reservedWords.containsKey(currentToken)) {
             relationalOper();
-            if (!reservedWords.containsKey(currentToken)){
+            if (!reservedWords.containsKey(currentToken)) {
                 System.out.println("bool exp is valid");
-            }else{
+            } else {
                 throw new Exception("bool expression name value cant be a reserved word at token number " + current);
             }
-        }else {
+        } else {
             throw new Exception("bool expression name value cant be a reserved word at token number " + current);
         }
 
     }
 
-    private void relationalOper() throws Exception{
+    private void relationalOper() throws Exception {
 
         //	relational-oper       "="     |     "<>"     |     "<"    |     "<="     |     ">"    |     ">="
         getToken();
         if (currentToken.equals("=") || currentToken.equals("<>") || currentToken.equals("<") || currentToken.equals("<=") || currentToken.equals(">") || currentToken.equals(">=")) {
             System.out.println("relational operator is valid");
-        }else{
+        } else {
             throw new Exception("Error parsing at token number " + current + " expected relational operator but found " + currentToken);
         }
 
     }
 
-    private void assStmt() throws Exception{
+    private void assStmt() throws Exception {
+
+        //	ass-stmt  ”name”  ":="  arith-exp
 
         System.out.println("enter assStmt");
         getToken();
         getToken();
-        if (!currentToken.equals("loop") && !currentToken.equals("start") && !currentToken.equals("if") && !currentToken.equals("end")){
+        if (!currentToken.equals("loop") && !currentToken.equals("start") && !currentToken.equals("if") && !currentToken.equals("end")) {
             System.out.println("curren token in assStmt if statement is " + currentToken);
-            if (!reservedWords.containsKey(currentToken)){
+            if (!reservedWords.containsKey(currentToken)) {
                 System.out.println("stmt name is not a reserved word");
                 getToken();
-                if (currentToken.equals(":=")){
+                if (currentToken.equals(":=")) {
                     System.out.println("token after stmt name is ':='");
                     arthExp();
-                }else{
+                } else {
                     throw new Exception("Error parsing at token number " + current + " expected is ':=' but found " + currentToken);
                 }
-            }else{
+            } else {
                 throw new Exception("Error parsing at token number " + current + " cant define ass-stmt name as reserved word");
             }
-        }else{
+        } else {
             retrieveToken();
             retrieveToken();
         }
         System.out.println("current token in assStmt is " + currentToken);
 
 
-
     }
 
-    private void arthExp() throws Exception{
+    private void arthExp() throws Exception {
 
         //arith-exp  term    ( add-sign      term )*
+
         System.out.println("enter athExp");
         term();
-        addSign();
-        term();
+        while (currentToken.equals("+") || currentToken.equals("-")) {
+            addSign();
+            term();
+        }
+
 
     }
 
-    private void addSign() throws Exception{
+    private void addSign() throws Exception {
 
         System.out.println("enter addSign");
         getToken();
         System.out.println("current token in addSign " + currentToken);
-        if (currentToken.equals("+") || currentToken.equals("-")){
+        if (currentToken.equals("+") || currentToken.equals("-")) {
             System.out.println("add sign found");
-        }else{
+        } else {
             retrieveToken();
         }
 
     }
 
-    private void term() throws Exception{
+    private void term() throws Exception {
 
         //	term  factor    ( mul-sign       factor  )*
+
         System.out.println("enter term");
         factor();
     }
 
-    private void factor() throws Exception{
+    private void factor() throws Exception {
 
         //factor   "("   arith-exp  ")"   |     name-value
+
         getToken();
         System.out.println("enter factor");
         System.out.println("current token in factor is " + currentToken);
-        if (currentToken.equals("(")){
+        if (currentToken.equals("(")) {
             arthExp();
             getToken();
-            if (currentToken.equals(")")){
+            if (currentToken.equals(")")) {
                 System.out.println("factor end with )");
-            }else{
+            } else {
                 throw new Exception("Error parsing at token number " + current + " expected ')' but found " + currentToken);
             }
-        }else{
-            if (!reservedWords.containsKey(currentToken)){
+        } else {
+            if (!reservedWords.containsKey(currentToken)) {
                 System.out.println("name value valid in factor");
-            }else{
+            } else {
                 throw new Exception("Error parsing at token number " + current + " cant define factor name value as reserved word");
             }
         }
@@ -323,46 +362,47 @@ public class GrammarParser {
     }
 
 
-    private void inoutStmt() throws Exception{
+    private void inoutStmt() throws Exception {
 
         //	inout-stmt  input "("    "name"     ")"    |    output  "("   name-value   ")"
+
         System.out.println("enter inoutStmt");
         System.out.println("curren token is " + currentToken);
-        if (currentToken.equals("input")){
+        if (currentToken.equals("input")) {
             System.out.println("if current equal input");
             getToken();
-            if (currentToken.equals("(")){
+            if (currentToken.equals("(")) {
                 getToken();
-                if (!reservedWords.containsKey(currentToken)){
+                if (!reservedWords.containsKey(currentToken)) {
                     getToken();
-                    if (currentToken.equals(")")){
+                    if (currentToken.equals(")")) {
                         System.out.println("input stmt valid");
-                    }else{
+                    } else {
                         throw new Exception("Error parsing at token number " + current + " expected ')' but found " + currentToken);
                     }
-                }else{
+                } else {
                     throw new Exception("Error parsing at token number " + current + " input name cant be reserved word");
                 }
-            }else{
-                throw new Exception("Error parsing at token number " + current + " expected '(' but found '" + currentToken+"'");
+            } else {
+                throw new Exception("Error parsing at token number " + current + " expected '(' but found '" + currentToken + "'");
             }
-        }else if (currentToken.equals("output")){
+        } else if (currentToken.equals("output")) {
             System.out.println("else if current equal output");
             getToken();
-            if (currentToken.equals("(")){
+            if (currentToken.equals("(")) {
                 getToken();
-                if (!reservedWords.containsKey(currentToken)){
+                if (!reservedWords.containsKey(currentToken)) {
                     getToken();
-                    if (currentToken.equals(")")){
+                    if (currentToken.equals(")")) {
                         System.out.println("output stmt valid");
-                    }else{
+                    } else {
                         throw new Exception("Error parsing at token number " + current + " expected ')' but found " + currentToken);
                     }
-                }else{
+                } else {
                     throw new Exception("Error parsing at token number " + current + " input name cant be reserved word");
                 }
-            }else{
-                throw new Exception("Error parsing at token number " + current + " expected '(' but found '" + currentToken+"'");
+            } else {
+                throw new Exception("Error parsing at token number " + current + " expected '(' but found '" + currentToken + "'");
             }
         }
 
@@ -372,9 +412,10 @@ public class GrammarParser {
     private void subroutineHeading() throws Exception {
 
         //subroutine-heading  routine  "name"    ";"
+
         System.out.println("enter subroutineHeading");
         System.out.println("current token is : " + currentToken);
-        if (currentToken.equals("routine")){
+        if (currentToken.equals("routine")) {
             System.out.println("token equals routine");
             getToken();
             if (!reservedWords.containsKey(currentToken)) {
@@ -383,14 +424,14 @@ public class GrammarParser {
                 if (currentToken.equals(";")) {
                     System.out.println("token equals ';'");
                     //getToken();
-                }else{
+                } else {
                     throw new Exception("Error parsing at " + current + "expected ';' but found " + currentToken);
                 }
-            }else {
+            } else {
                 throw new Exception("Error parsing at token number " + current + " routine name can be reserved word ");
 
             }
-        }else {
+        } else {
             System.out.println("token not equals routine");
         }
 
@@ -403,7 +444,7 @@ public class GrammarParser {
         if (currentToken.equals("var")) {
             System.out.println("token equals var");
             getToken();
-            while (!currentToken.equals("routine") && !currentToken.equals("start") && !reservedWords.containsKey(currentToken)){
+            while (!currentToken.equals("routine") && !currentToken.equals("start") && !reservedWords.containsKey(currentToken)) {
                 System.out.println("while loop ");
                 System.out.println("current token in loop : " + currentToken);
                 varItem();
@@ -411,13 +452,13 @@ public class GrammarParser {
                 if (currentToken.equals(";")) {
                     System.out.println("token equals ';' ");
                     getToken();
-                }else{
+                } else {
                     throw new Exception("Error parsing at " + current + "expected ';' but found " + tokenList.get(current));
                 }
             }
             System.out.println("end of while loop in varDeclaration");
             //retrieveToken();
-        }else{
+        } else {
             retrieveToken();
         }
 
@@ -434,7 +475,7 @@ public class GrammarParser {
                 throw new Exception("Error parsing at " + current + "expected 'int' but found " + tokenList.get(current));
             }
             System.out.println("end of varItem");
-        }else {
+        } else {
             throw new Exception("Error parsing at token number " + current + "expected ':' but found " + tokenList.get(current));
         }
     }
@@ -442,17 +483,17 @@ public class GrammarParser {
 
     private void nameList() throws Exception {
         //name-list   "name" (","  "name")^*
-        System.out.println("current token in nameList is '" + currentToken+"'");
+        System.out.println("current token in nameList is '" + currentToken + "'");
         if (!reservedWords.containsKey(currentToken)) {
             System.out.println("token equals name in nameList");
             getToken();
-            System.out.println("current token in nameList is '" + currentToken+"'");
+            System.out.println("current token in nameList is '" + currentToken + "'");
             while (currentToken.equals(",")) {
                 getToken();
                 if (!reservedWords.containsKey(currentToken)) {
                     System.out.println("token equals name in loop");
                     getToken();
-                }else{
+                } else {
                     throw new Exception("Error parsing at " + current + "var name cant be a reserved word -> " + tokenList.get(current));
                 }
             }
@@ -464,14 +505,14 @@ public class GrammarParser {
 
     private void constDeclaration() throws Exception {
 
-        System.out.println("constDeclaration");
         //const-decl  const ( const-item  ";" )^+  | lambda
 
+        System.out.println("constDeclaration");
         getToken();
         if (currentToken.equals("const")) {
             System.out.println("token equals const");
             getToken();
-            while (!currentToken.equals("var") && !currentToken.equals("routine") && !currentToken.equals("start") && !reservedWords.containsKey(currentToken)){
+            while (!currentToken.equals("var") && !currentToken.equals("routine") && !currentToken.equals("start") && !reservedWords.containsKey(currentToken)) {
                 System.out.println("while loop");
                 System.out.println("current token in loop : " + currentToken);
                 constItem();
@@ -479,11 +520,11 @@ public class GrammarParser {
                 if (currentToken.equals(";")) {
                     System.out.println("token equals ';' ");
                     getToken();
-                }else{
+                } else {
                     throw new Exception("Error parsing at " + current + "expected ';' but found " + tokenList.get(current));
                 }
             }
-        }else{
+        } else {
             System.out.println("retrieve token");
             retrieveToken();
             System.out.println("current token : " + currentToken);
@@ -492,9 +533,10 @@ public class GrammarParser {
     }
 
     private void constItem() throws Exception {
-        System.out.println("constItem");
+
         //	const-item     "name"   =   "integer-value"
 
+        System.out.println("enter constItem");
         System.out.println("constItem in current token " + currentToken);
         if (!reservedWords.containsKey(currentToken)) {
             getToken();
@@ -521,28 +563,27 @@ public class GrammarParser {
 
     private void projectHeading() throws Exception {
         System.out.println("projectHeading");
-
-
-            //Check if project definition starts with project keyword
+        
+        //Check if project definition starts with project keyword
+        getToken();
+        if (currentToken.equals("project")) {
+            System.out.println("token equals project keyword");
+            //Check if project name is not a reserved word
             getToken();
-            if (currentToken.equals("project")) {
-                System.out.println("token equals project keyword");
-                //Check if project name is not a reserved word
+            if (!reservedWords.containsKey(currentToken)) {
+                System.out.println("project name is not a reserved word");
                 getToken();
-                if (!reservedWords.containsKey(currentToken)) {
-                    System.out.println("project name is not a reserved word");
-                    getToken();
-                    if (currentToken.equals(";")) {
-                        System.out.println("Project heading is correct");
-                    } else {
-                        throw new Exception("Error parsing at " + current + "expected ; but found " + tokenList.get(current));
-                    }
+                if (currentToken.equals(";")) {
+                    System.out.println("Project heading is correct");
                 } else {
-                    throw new Exception("Error parsing at token number " + current + " project name cant be a reserved word ");
+                    throw new Exception("Error parsing at " + current + "expected ; but found " + tokenList.get(current));
                 }
             } else {
-                throw new Exception("Error parsing at " + current + "expected project keyword but found " + tokenList.get(current));
+                throw new Exception("Error parsing at token number " + current + " project name cant be a reserved word ");
             }
+        } else {
+            throw new Exception("Error parsing at " + current + "expected project keyword but found " + tokenList.get(current));
+        }
 
 
     }

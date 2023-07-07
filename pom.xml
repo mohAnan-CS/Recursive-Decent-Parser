@@ -61,7 +61,7 @@
                         <id>default-cli</id>
                         <configuration>
                             <mainClass>
-                                com.birzeit.recursivedescentparser/com.birzeit.recursivedescentparser.HelloApplication
+                                com.birzeit.recursivedescentparser/com.birzeit.recursivedescentparser.ParserApplication
                             </mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
