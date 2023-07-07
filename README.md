@@ -42,6 +42,12 @@ The following are the production rules used in this parser:
 | bool-exp → name-value relational-oper name-value 
 | relational-oper → "=" | "<>" | "<" | "<=" | ">" | ">=" 
 
+## Example Running
+
+Here's a screenshot of the recursive descent parser in action, parsing a sample code snippet:
+
+![Example Running](example_screenshot.png)
+
 ## Usage
 
 To use this project, follow these steps:
