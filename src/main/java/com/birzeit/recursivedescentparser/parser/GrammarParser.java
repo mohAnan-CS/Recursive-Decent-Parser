@@ -108,7 +108,7 @@ public class GrammarParser {
         subroutineHeading();
         declarations();
         //compound-statement
-        //compoundStatement();
+        compoundStatement();
         System.out.println("current token after compound statement is " + currentToken);
         if (currentToken.equals(";")) {
             System.out.println("subroutine declaration valid");
@@ -127,6 +127,9 @@ public class GrammarParser {
             getToken();
             stmtList();
             System.out.println("current token after stmt list is " + currentToken);
+            if (currentToken.equals(";")){
+                return;
+            }
             if (currentToken.equals("end")) {
                 System.out.println("compound statement end with 'end'");
                 getToken();
@@ -165,14 +168,74 @@ public class GrammarParser {
     private void statement() throws Exception{
 
         System.out.println("enter statement");
+        System.out.println("current token in statement is " + currentToken);
+        if (currentToken.equals("input") || currentToken.equals("output")) {
+            inoutStmt();
+        }else if (currentToken.equals("if")) {
+            ifStmt();
+        }else if (currentToken.equals("loop")) {
+            //loopStmt();
+        }else if (currentToken.equals("start")) {
+            compoundStatement();
+        }else{
+            if (!reservedWords.containsKey(currentToken)){
+                assStmt();
+            }else{
+                throw new Exception("Error parsing at token number " + current + " cant resolve statement name value as reserved word ");
+            }
+
+        }
         //statement  ass-stmt  |  inout-stmt  | if-stmt | loop-stmt | compound-stmt | lambda
         //inout-stmt
         inoutStmt();
         //ass-stmt
         assStmt();
         //if-stmt
+        ifStmt();
+        System.out.println("end of if stmt");
         //loop-stmt
         //compound-stmt
+
+    }
+
+    private void ifStmt() throws Exception{
+
+        System.out.println("if statement enter");
+        //if-stmt  if  “(“ bool-exp   “)”  then  statement  else-part  endif
+        if (currentToken.equals("if")){
+
+            getToken();
+            if (currentToken.equals("(")){
+                boolExp();
+            }
+        }
+    }
+
+    private void boolExp() throws Exception{
+
+        System.out.println("enter bool exp");
+        if (!reservedWords.containsKey(currentToken)){
+            relationalOper();
+            if (!reservedWords.containsKey(currentToken)){
+                System.out.println("bool exp is valid");
+            }else{
+                throw new Exception("bool expression name value cant be a reserved word at token number " + current);
+            }
+        }else {
+            throw new Exception("bool expression name value cant be a reserved word at token number " + current);
+        }
+
+    }
+
+    private void relationalOper() throws Exception{
+
+        //	relational-oper       "="     |     "<>"     |     "<"    |     "<="     |     ">"    |     ">="
+        getToken();
+        if (currentToken.equals("=") || currentToken.equals("<>") || currentToken.equals("<") || currentToken.equals("<=") || currentToken.equals(">") || currentToken.equals(">=")) {
+            System.out.println("relational operator is valid");
+        }else{
+            throw new Exception("Error parsing at token number " + current + " expected relational operator but found " + currentToken);
+        }
 
     }
 
@@ -181,7 +244,7 @@ public class GrammarParser {
         System.out.println("enter assStmt");
         getToken();
         getToken();
-        if (!currentToken.equals("loop") && !currentToken.equals("start") && !currentToken.equals("if")){
+        if (!currentToken.equals("loop") && !currentToken.equals("start") && !currentToken.equals("if") && !currentToken.equals("end")){
             System.out.println("curren token in assStmt if statement is " + currentToken);
             if (!reservedWords.containsKey(currentToken)){
                 System.out.println("stmt name is not a reserved word");
