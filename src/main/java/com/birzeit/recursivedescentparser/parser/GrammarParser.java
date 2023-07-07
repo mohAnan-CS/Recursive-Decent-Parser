@@ -46,7 +46,7 @@ public class GrammarParser {
                 "  var\n" +
                 "    num:int;\n" +
                 "start\n" +
-                "  output(x);\n" +
+                "  input(x);\n" +
                 "  num:=n+10;\n" +
                 "  output(num);\n" +
                 "end;");
@@ -76,6 +76,7 @@ public class GrammarParser {
         //declarations
         declarations();
         //compound-statement
+        compoundStatement();
     }
 
     private void declarations() throws Exception {
@@ -107,7 +108,13 @@ public class GrammarParser {
         subroutineHeading();
         declarations();
         //compound-statement
-        compoundStatement();
+        //compoundStatement();
+        System.out.println("current token after compound statement is " + currentToken);
+        if (currentToken.equals(";")) {
+            System.out.println("subroutine declaration valid");
+        } else {
+            throw new Exception("Error parsing at token number " + current + " expected ';' but found " + currentToken);
+        }
 
 
     }
@@ -119,6 +126,15 @@ public class GrammarParser {
         if (currentToken.equals("start")) {
             getToken();
             stmtList();
+            System.out.println("current token after stmt list is " + currentToken);
+            if (currentToken.equals("end")) {
+                System.out.println("compound statement end with 'end'");
+                getToken();
+                System.out.println("current token is " + currentToken);
+
+            } else {
+                throw new Exception("Error parsing at token number " + current + " expected 'end' but found " + currentToken);
+            }
         }else{
             throw new Exception("Error parsing at token number " + current + " expected 'start' but found " + currentToken);
         }
@@ -128,12 +144,20 @@ public class GrammarParser {
     private void stmtList() throws Exception{
 
         //stmt-list    ( statement    ";" )*
-        statement();
-        //ass-stmt
-        //inout-stmt
-        //if-stmt
-        //loop-stmt
-        //compound-stmt
+        if (currentToken.equals("end")) {
+            System.out.println("stmt list is empty");
+        }else {
+            while (!currentToken.equals("end")) {
+                statement();
+                getToken();
+                System.out.println("current token after stmt list is " + currentToken);
+                if (currentToken.equals(";")) {
+                    System.out.println("stmt list valid");
+                } else {
+                    throw new Exception("Error parsing at token number " + current + " expected ';' but found " + currentToken);
+                }
+            }
+        }
 
     }
 
@@ -144,6 +168,7 @@ public class GrammarParser {
         //inout-stmt
         inoutStmt();
         //ass-stmt
+        //assStmt();
         //if-stmt
         //loop-stmt
         //compound-stmt
