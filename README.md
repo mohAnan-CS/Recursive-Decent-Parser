@@ -46,7 +46,7 @@ The following are the production rules used in this parser:
 
 Here's a screenshot of the recursive descent parser in action, parsing a sample code snippet:
 
-![Example Running](example_screenshot.png)
+![Example Running](https://github.com/mohAnan-CS/Recursive-Decent-Parser/blob/master/example-running.png)
 
 ## Usage
 
