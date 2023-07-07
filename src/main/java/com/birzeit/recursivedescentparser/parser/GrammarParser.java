@@ -70,25 +70,24 @@ public class GrammarParser {
     }
 
     private void projectDef() throws Exception {
-        System.out.println("projectDef");
-        //project-heading
+
+        //project-def     project-heading   declarations   compound-stmt
+
         projectHeading();
-        //declarations
         declarations();
-        //compound-statement
         compoundStatement();
     }
 
     private void declarations() throws Exception {
+
+        //declarations  const-decl  var-decl  subroutine-decl
 
         if (currentToken.equals("start")) {
             System.out.println("token equals start in declarations");
             compoundStatement();
         } else {
             System.out.println("enter declarations");
-            //const-declaration
             constDeclaration();
-            //var-decl
             System.out.println("finished constDeclaration");
             varDeclaration();
             System.out.println("finished varDeclaration");
@@ -122,6 +121,7 @@ public class GrammarParser {
     private void compoundStatement() throws Exception {
 
         //compound-stmt  start  stmt-list end
+
         System.out.println("enter compoundStatement");
         if (currentToken.equals("start")) {
             getToken();
@@ -147,6 +147,7 @@ public class GrammarParser {
     private void stmtList() throws Exception {
 
         //stmt-list    ( statement    ";" )*
+
         if (currentToken.equals("end")) {
             System.out.println("stmt list is empty");
         } else {
@@ -176,7 +177,7 @@ public class GrammarParser {
         } else if (currentToken.equals("if")) {
             ifStmt();
         } else if (currentToken.equals("loop")) {
-            //loopStmt();
+            loopStmt();
         } else if (currentToken.equals("start")) {
             compoundStatement();
         } else {
@@ -196,6 +197,32 @@ public class GrammarParser {
         System.out.println("end of if stmt");
         //loop-stmt
         //compound-stmt
+
+    }
+
+    private void loopStmt() throws Exception{
+
+        //	loop-stmt  loop   “(“    bool-exp   “)”  do   statement
+
+        if(currentToken.equals("loop")){
+            getToken();
+            if (currentToken.equals("(")){
+                boolExp();
+                getToken();
+                if (currentToken.equals(")")){
+                    getToken();
+                    if (currentToken.equals("do")){
+                        statement();
+                    }else{
+                        throw new Exception("Error parsing at token number " + current + " expected 'do' but found '" + currentToken+"'");
+                    }
+                }else {
+                    throw new Exception("Error parsing at token number " + current + " expected ')' but found '" + currentToken+"'");
+                }
+            }else {
+                throw new Exception("Error parsing at token number " + current + " expected '(' but found '" + currentToken+"'");
+            }
+        }
 
     }
 
@@ -330,6 +357,7 @@ public class GrammarParser {
 
         System.out.println("enter term");
         factor();
+
     }
 
     private void factor() throws Exception {
