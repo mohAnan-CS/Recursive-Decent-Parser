@@ -36,6 +36,8 @@ public class GrammarParser {
 
         Tokenizer tokenizer = new Tokenizer();
         TokenizerResult result = tokenizer.tokenize("project projects;\n" +
+                "const\n" +
+                "  len=100;\n" +
                 "var\n" +
                 "  total:int;\n" +
                 "  \n" +
@@ -47,21 +49,7 @@ public class GrammarParser {
                 "  input(x);\n" +
                 "  num:=n+10;\n" +
                 "  output(num);\n" +
-                "end;\n" +
-                "  \n" +
-                "start\n" +
-                "  input(i);\n" +
-                "  if (i< 100) then\n" +
-                "    j:=5\n" +
-                "  endif;\n" +
-                "  loop (i<> min) do\n" +
-                "    start\n" +
-                "      i := i+1;\n" +
-                "      output(i);\n" +
-                "      total :=total+i;\n" +
-                "    end;\n" +
-                "  output(total);\n" +
-                "end .");
+                "end;");
         reservedWords = result.getReservedWords();
         tokenList = result.getTokens();
 
@@ -92,15 +80,20 @@ public class GrammarParser {
 
     private void declarations() throws Exception {
 
-        System.out.println("enter declarations");
-        //const-declaration
-        constDeclaration();
-        //var-decl
-        System.out.println("finished constDeclaration");
-        varDeclaration();
-        System.out.println("finished varDeclaration");
-        //subroutine-decl
-        subroutineDeclaration();
+        if (currentToken.equals("start")){
+            System.out.println("token equals start in declarations");
+            compoundStatement();
+        }else {
+            System.out.println("enter declarations");
+            //const-declaration
+            constDeclaration();
+            //var-decl
+            System.out.println("finished constDeclaration");
+            varDeclaration();
+            System.out.println("finished varDeclaration");
+            //subroutine-decl
+            subroutineDeclaration();
+        }
 
 
     }
@@ -112,10 +105,27 @@ public class GrammarParser {
         System.out.println("enter subroutineDeclaration");
         //subroutine-heading
         subroutineHeading();
-        //declarations
+        declarations();
         //compound-statement
+        compoundStatement();
 
 
+    }
+
+    private void compoundStatement() throws Exception{
+
+        //compund-stmt  start  stmt-list end
+        System.out.println("enter compoundStatement");
+        if (currentToken.equals("start")) {
+            getToken();
+            stmtList();
+        }else{
+            throw new Exception("Error parsing at token number " + current + " expected 'start' but found " + currentToken);
+        }
+
+    }
+
+    private void stmtList() {
     }
 
     private void subroutineHeading() throws Exception {
@@ -131,7 +141,7 @@ public class GrammarParser {
                 getToken();
                 if (currentToken.equals(";")) {
                     System.out.println("token equals ';'");
-                    getToken();
+                    //getToken();
                 }else{
                     throw new Exception("Error parsing at " + current + "expected ';' but found " + currentToken);
                 }
@@ -164,7 +174,8 @@ public class GrammarParser {
                     throw new Exception("Error parsing at " + current + "expected ';' but found " + tokenList.get(current));
                 }
             }
-            retrieveToken();
+            System.out.println("end of while loop in varDeclaration");
+            //retrieveToken();
         }else{
             retrieveToken();
         }
@@ -181,6 +192,7 @@ public class GrammarParser {
             if (!currentToken.equals("int")) {
                 throw new Exception("Error parsing at " + current + "expected 'int' but found " + tokenList.get(current));
             }
+            System.out.println("end of varItem");
         }else {
             throw new Exception("Error parsing at token number " + current + "expected ':' but found " + tokenList.get(current));
         }
@@ -302,7 +314,7 @@ public class GrammarParser {
         String token = tokenList.get(current);
         currentToken = token;
 
-        System.out.println("getToken()  '" + token + "'");
+        System.out.println("getToken()  '" + token + "'" + " number of token is " + current);
         current++;
 
     }
