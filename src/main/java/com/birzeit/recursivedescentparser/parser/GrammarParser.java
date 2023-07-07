@@ -92,14 +92,56 @@ public class GrammarParser {
 
     private void declarations() throws Exception {
 
-        System.out.println("declarations");
+        System.out.println("enter declarations");
         //const-declaration
         constDeclaration();
         //var-decl
-        System.out.println("Finished constDeclaration");
-        System.out.println("current token : " + currentToken);
+        System.out.println("finished constDeclaration");
         varDeclaration();
+        System.out.println("finished varDeclaration");
         //subroutine-decl
+        subroutineDeclaration();
+
+
+    }
+
+    private void subroutineDeclaration() throws Exception{
+
+        //subroutine-decl  subroutine-heading  declarations  compound-stmt  “;”  |  lambda
+
+        System.out.println("enter subroutineDeclaration");
+        //subroutine-heading
+        subroutineHeading();
+        //declarations
+        //compound-statement
+
+
+    }
+
+    private void subroutineHeading() throws Exception {
+
+        //subroutine-heading  routine  "name"    ";"
+        System.out.println("enter subroutineHeading");
+        System.out.println("current token is : " + currentToken);
+        if (currentToken.equals("routine")){
+            System.out.println("token equals routine");
+            getToken();
+            if (!reservedWords.containsKey(currentToken)) {
+                System.out.println("token equals name");
+                getToken();
+                if (currentToken.equals(";")) {
+                    System.out.println("token equals ';'");
+                    getToken();
+                }else{
+                    throw new Exception("Error parsing at " + current + "expected ';' but found " + currentToken);
+                }
+            }else {
+                throw new Exception("Error parsing at token number " + current + " routine name can be reserved word ");
+
+            }
+        }else {
+            System.out.println("token not equals routine");
+        }
 
     }
 
@@ -122,6 +164,7 @@ public class GrammarParser {
                     throw new Exception("Error parsing at " + current + "expected ';' but found " + tokenList.get(current));
                 }
             }
+            retrieveToken();
         }else{
             retrieveToken();
         }
@@ -251,7 +294,7 @@ public class GrammarParser {
 
     }
 
-    private static String getToken() throws Exception {
+    private static void getToken() throws Exception {
 
         if (current >= tokenList.size()) {
             throw new Exception("End of input expected, but more tokens found. at token " + current);
@@ -261,18 +304,16 @@ public class GrammarParser {
 
         System.out.println("getToken()  '" + token + "'");
         current++;
-        return token;
 
     }
 
-    private static String retrieveToken() throws Exception {
-        //write a code that decreeases current by 1 and returns the token at that position
+    private static void retrieveToken() throws Exception {
+        //write a code that decreases current by 1 and returns the token at that position
         if (current == 0) {
             throw new Exception("Start of input expected, but more tokens found. at token " + current);
         }
         String token = tokenList.get(current - 1);
         currentToken = token;
-        return token;
 
     }
 }
