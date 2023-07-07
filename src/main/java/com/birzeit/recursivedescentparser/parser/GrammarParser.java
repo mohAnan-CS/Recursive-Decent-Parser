@@ -205,6 +205,61 @@ public class GrammarParser {
 
     }
 
+    private void arthExp() throws Exception{
+
+        //arith-exp  term    ( add-sign      term )*
+        System.out.println("enter athExp");
+        term();
+        addSign();
+        term();
+
+    }
+
+    private void addSign() throws Exception{
+
+        System.out.println("enter addSign");
+        getToken();
+        System.out.println("current token in addSign " + currentToken);
+        if (currentToken.equals("+") || currentToken.equals("-")){
+            System.out.println("add sign found");
+        }else{
+            retrieveToken();
+        }
+
+    }
+
+    private void term() throws Exception{
+
+        //	term  factor    ( mul-sign       factor  )*
+        System.out.println("enter term");
+        factor();
+    }
+
+    private void factor() throws Exception{
+
+        //factor   "("   arith-exp  ")"   |     name-value
+        getToken();
+        System.out.println("enter factor");
+        System.out.println("current token in factor is " + currentToken);
+        if (currentToken.equals("(")){
+            arthExp();
+            getToken();
+            if (currentToken.equals(")")){
+                System.out.println("factor end with )");
+            }else{
+                throw new Exception("Error parsing at token number " + current + " expected ')' but found " + currentToken);
+            }
+        }else{
+            if (!reservedWords.containsKey(currentToken)){
+                System.out.println("name value valid in factor");
+            }else{
+                throw new Exception("Error parsing at token number " + current + " cant define factor name value as reserved word");
+            }
+        }
+
+    }
+
+
     private void inoutStmt() throws Exception{
 
         //	inout-stmt  input "("    "name"     ")"    |    output  "("   name-value   ")"
