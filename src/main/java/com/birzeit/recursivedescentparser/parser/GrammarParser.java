@@ -153,6 +153,7 @@ public class GrammarParser {
                 System.out.println("current token after stmt list is " + currentToken);
                 if (currentToken.equals(";")) {
                     System.out.println("stmt list valid");
+                    getToken();
                 } else {
                     throw new Exception("Error parsing at token number " + current + " expected ';' but found " + currentToken);
                 }
@@ -168,10 +169,39 @@ public class GrammarParser {
         //inout-stmt
         inoutStmt();
         //ass-stmt
-        //assStmt();
+        assStmt();
         //if-stmt
         //loop-stmt
         //compound-stmt
+
+    }
+
+    private void assStmt() throws Exception{
+
+        System.out.println("enter assStmt");
+        getToken();
+        getToken();
+        if (!currentToken.equals("loop") && !currentToken.equals("start") && !currentToken.equals("if")){
+            System.out.println("curren token in assStmt if statement is " + currentToken);
+            if (!reservedWords.containsKey(currentToken)){
+                System.out.println("stmt name is not a reserved word");
+                getToken();
+                if (currentToken.equals(":=")){
+                    System.out.println("token after stmt name is ':='");
+                    arthExp();
+                }else{
+                    throw new Exception("Error parsing at token number " + current + " expected is ':=' but found " + currentToken);
+                }
+            }else{
+                throw new Exception("Error parsing at token number " + current + " cant define ass-stmt name as reserved word");
+            }
+        }else{
+            retrieveToken();
+            retrieveToken();
+        }
+        System.out.println("current token in assStmt is " + currentToken);
+
+
 
     }
 
