@@ -167,6 +167,8 @@ public class GrammarParser {
 
     private void statement() throws Exception {
 
+        //statement  ass-stmt  |  inout-stmt  | if-stmt | loop-stmt | compound-stmt | lambda
+
         System.out.println("enter statement");
         System.out.println("current token in statement is " + currentToken);
         if (currentToken.equals("input") || currentToken.equals("output")) {
@@ -183,9 +185,8 @@ public class GrammarParser {
             } else {
                 throw new Exception("Error parsing at token number " + current + " cant resolve statement name value as reserved word ");
             }
-
         }
-        //statement  ass-stmt  |  inout-stmt  | if-stmt | loop-stmt | compound-stmt | lambda
+
         //inout-stmt
         inoutStmt();
         //ass-stmt
@@ -245,17 +246,12 @@ public class GrammarParser {
 
     private void boolExp() throws Exception {
 
+        //	bool-exp  name-value relational-oper  name-value
+
         System.out.println("enter bool exp");
-        if (!reservedWords.containsKey(currentToken)) {
-            relationalOper();
-            if (!reservedWords.containsKey(currentToken)) {
-                System.out.println("bool exp is valid");
-            } else {
-                throw new Exception("bool expression name value cant be a reserved word at token number " + current);
-            }
-        } else {
-            throw new Exception("bool expression name value cant be a reserved word at token number " + current);
-        }
+        nameValue();
+        relationalOper();
+        nameValue();
 
     }
 
@@ -352,11 +348,7 @@ public class GrammarParser {
                 throw new Exception("Error parsing at token number " + current + " expected ')' but found " + currentToken);
             }
         } else {
-            if (!reservedWords.containsKey(currentToken)) {
-                System.out.println("name value valid in factor");
-            } else {
-                throw new Exception("Error parsing at token number " + current + " cant define factor name value as reserved word");
-            }
+            nameValue();
         }
 
     }
@@ -391,16 +383,14 @@ public class GrammarParser {
             getToken();
             if (currentToken.equals("(")) {
                 getToken();
-                if (!reservedWords.containsKey(currentToken)) {
-                    getToken();
-                    if (currentToken.equals(")")) {
-                        System.out.println("output stmt valid");
-                    } else {
-                        throw new Exception("Error parsing at token number " + current + " expected ')' but found " + currentToken);
-                    }
+                nameValue();
+                getToken();
+                if (currentToken.equals(")")) {
+                    System.out.println("output stmt valid");
                 } else {
-                    throw new Exception("Error parsing at token number " + current + " input name cant be reserved word");
+                    throw new Exception("Error parsing at token number " + current + " expected ')' but found " + currentToken);
                 }
+
             } else {
                 throw new Exception("Error parsing at token number " + current + " expected '(' but found '" + currentToken + "'");
             }
@@ -478,6 +468,22 @@ public class GrammarParser {
         } else {
             throw new Exception("Error parsing at token number " + current + "expected ':' but found " + tokenList.get(current));
         }
+    }
+
+    private void nameValue() throws Exception {
+
+        //name-value   "name"  |  "int-value"
+        System.out.println("current token in nameValue is '" + currentToken + "'");
+
+        getToken();
+        if (isParsableToInt(currentToken)) {
+            System.out.println("token equals int-value in nameValue");
+        } else if (!reservedWords.containsKey(currentToken)) {
+            System.out.println("token equals name in nameValue");
+        } else {
+            throw new Exception("Error parsing at " + current + "name value cant be a reserved word -> " + tokenList.get(current));
+        }
+
     }
 
 
@@ -563,7 +569,7 @@ public class GrammarParser {
 
     private void projectHeading() throws Exception {
         System.out.println("projectHeading");
-        
+
         //Check if project definition starts with project keyword
         getToken();
         if (currentToken.equals("project")) {
@@ -602,12 +608,21 @@ public class GrammarParser {
     }
 
     private static void retrieveToken() throws Exception {
-        //write a code that decreases current by 1 and returns the token at that position
+
         if (current == 0) {
             throw new Exception("Start of input expected, but more tokens found. at token " + current);
         }
         String token = tokenList.get(current - 1);
         currentToken = token;
 
+    }
+
+    public static boolean isParsableToInt(String string) {
+        try {
+            Integer.parseInt(string);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 }
