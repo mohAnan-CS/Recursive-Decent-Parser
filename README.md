@@ -18,6 +18,8 @@ The following are the production rules used in this parser:
 | project-def → project-heading ...      | Description of the project definition rule       |
 | ...                                    | ...                                              |
 
+| Production Rule
+|----------------------------------------|
 | project-declaration → project-def "."
 | project-def → project-heading declarations compound-stmt
 | project-heading → project "name" ";"
