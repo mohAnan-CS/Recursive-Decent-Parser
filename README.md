@@ -11,13 +11,7 @@ In a recursive descent parser, each non-terminal in the grammar is associated wi
 ## Production Rules
 
 The following are the production rules used in this parser:
-
-| Production Rule                        | Description                                      |
-|----------------------------------------|--------------------------------------------------|
-| project-declaration → project-def "."   | Description of the project declaration rule      |
-| project-def → project-heading ...      | Description of the project definition rule       |
-| ...                                    | ...                                              |
-
+                                
 | Production Rule
 |----------------------------------------|
 | project-declaration → project-def "."
@@ -48,36 +42,14 @@ The following are the production rules used in this parser:
 | bool-exp → name-value relational-oper name-value 
 | relational-oper → "=" | "<>" | "<" | "<=" | ">" | ">=" 
 
-
-To copy the production rules, users can simply select the content of the table and copy it.
-
-Feel free to explore the code and modify it according to your needs.
-
 ## Usage
 
 To use this project, follow these steps:
 
 1. Clone the repository to your local machine.
-2. Make sure you have Python installed.
+2. Make sure you have Java installed.
 3. Open the project in your preferred code editor.
-4. Run the `main.py` file.
-5. Input the code or text you want to parse.
-6. The program will display whether the input was parsed successfully or if there were any errors. If there are errors, it will show the line number and error message along with the token number.
-
-Feel free to explore the code and modify it according to your needs.
-
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
-## Contributing
-
-Contributions are welcome! If you find any issues or have suggestions for improvements, please open an issue or submit a pull request.
-
-## Contact
-
-For any inquiries or questions, you can reach me at [your-email@example.com](mailto:your-email@example.com).
-
----
-
-Thank you for checking out this recursive descent parser project! I hope you find it useful. Happy parsing!
+4. Make sure to change the path files based on your directory 
+5. Run the `GrammerFile.java` file.
+6. Enter input that you want to parse.
+7. The program will display whether the input was parsed successfully or if there were any errors. If there are errors, it will show the line number and error message along with the token number.
